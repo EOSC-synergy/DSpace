@@ -1,0 +1,10 @@
+version: "3.6"
+
+services:
+  dspace-testing:
+    image: "indigodatacloud/ci-images:java"
+    hostname: "dspace-testing"
+    volumes:
+     - type: bind
+       source: ./
+       target: /dspace-testing       

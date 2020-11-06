@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <!--
 
     The contents of this file are subject to the license and copyright
@@ -9,6 +10,8 @@
 
 	Developed by DSpace @ Lyncode <dspace@lyncode.com>
  -->
+=======
+>>>>>>> 678f949350790b2878d551677cd1cb295f075113
 <Configuration indented="false" maxListIdentifiersSize="100" maxListRecordsSize="100"
     maxListSetsSize="100" stylesheet="static/style.xsl" xmlns="http://www.lyncode.com/XOAIConfiguration">
 
@@ -17,7 +20,8 @@
             <!-- Restrict access to hidden items by default -->
             <Filter ref="defaultFilter"/>
 
-            <Format ref="oaidc"/>
+	    <Format ref="oaidc"/>
+	    <Format ref="datacite"/>
             <Format ref="mets"/>
             <!--  <Format ref="xoai"/>-->
             <Format ref="didl"/>
@@ -49,7 +53,8 @@
             <!-- Just an alias, in fact it returns all items within the driver context -->
             <Set ref="driverSet"/>
             <!-- Metadata Formats -->
-            <Format ref="oaidc"/>
+	    <Format ref="oaidc"/>
+	    <Format ref="datacite"/>
             <Format ref="mets"/>
             <Format ref="didl"/>
             <Description>
@@ -74,10 +79,12 @@
             <!-- Just an alias, in fact it returns all items within the driver context -->
             <Set ref="openaireFundedResourcesSet"/>
             <!-- Metadata Formats -->
-            <Format ref="oaidc"/>
+	    <Format ref="oaidc"/>
+	    <Format ref="datacite"/>
             <Format ref="mets"/>
             <Description>
                 This contexts complies with OpenAIRE Guidelines for Literature Repositories v3.0.
+<<<<<<< HEAD
             </Description>
         </Context>
 
@@ -124,6 +131,32 @@
             </Description>
         </Context>
 
+=======
+            </Description>
+        </Context>
+
+        <!--
+            OpenAIRE Guidelines 4.0:
+
+            - https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/
+
+            There is a limitation over the embargoedEndDate parameter:
+
+            - Predefined DSpace fields don't allow to set this up with a default.
+         -->
+        <Context baseurl="openaire4" name="OpenAIRE 4 Context">
+            <!-- Date format, field prefixes, etc are ensured by the transformer -->
+            <Transformer ref="openaire4Transformer"/>
+            <!-- OpenAIRE filter -->
+            <Filter ref="openAIRE4Filter"/>
+            <!-- Metadata Formats -->
+            <Format ref="oaiopenaire"/>
+            <Description>
+                This contexts complies with OpenAIRE Guidelines for Literature Repositories v4.0.
+            </Description>
+        </Context>
+
+>>>>>>> 678f949350790b2878d551677cd1cb295f075113
     </Contexts>
 
 
@@ -133,6 +166,12 @@
             <XSLT>metadataFormats/oai_dc.xsl</XSLT>
             <Namespace>http://www.openarchives.org/OAI/2.0/oai_dc/</Namespace>
             <SchemaLocation>http://www.openarchives.org/OAI/2.0/oai_dc.xsd</SchemaLocation>
+        </Format>
+        <Format id="datacite">
+            <Prefix>datacite</Prefix>
+            <XSLT>metadataFormats/datacite.xsl</XSLT>
+	    <Namespace>http://datacite.org/schema/kernel-4/</Namespace>
+            <SchemaLocation>http://datacite.org/schema/kernel-4 http://schema.datacite.org/meta/kernel-4/metadata.xsd</SchemaLocation>
         </Format>
         <Format id="mets">
             <Prefix>mets</Prefix>
@@ -210,7 +249,11 @@
             <SchemaLocation>http://irdb.nii.ac.jp/oai/junii2-3-1.xsd</SchemaLocation>
         </Format>
         <!-- Metadata format based on the OpenAIRE 4.0 guidelines
+<<<<<<< HEAD
              https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/use_of_oai_pmh.html
+=======
+             https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/use_of_oai_pmh.html 
+>>>>>>> 678f949350790b2878d551677cd1cb295f075113
         -->
         <Format id="oaiopenaire">
             <Prefix>oai_openaire</Prefix>
@@ -218,6 +261,7 @@
             <Namespace>http://namespace.openaire.eu/schema/oaire/</Namespace>
             <SchemaLocation>https://www.openaire.eu/schema/repo-lit/4.0/openaire.xsd</SchemaLocation>
         </Format>
+<<<<<<< HEAD
         <!-- set the format for openaire cerif profile -->
         <Format id="oai_cerif">
             <Prefix>oai_cerif_openaire</Prefix>
@@ -225,6 +269,8 @@
             <Namespace>https://www.openaire.eu/cerif-profile/1.1/</Namespace>
             <SchemaLocation>https://www.openaire.eu/schema/cris/1.1/openaire-cerif-profile.xsd</SchemaLocation>
         </Format>
+=======
+>>>>>>> 678f949350790b2878d551677cd1cb295f075113
     </Formats>
 
     <Transformers>
@@ -237,9 +283,12 @@
         <Transformer id="openaire4Transformer">
             <XSLT>transformers/openaire4.xsl</XSLT>
         </Transformer>
+<<<<<<< HEAD
         <Transformer id="openairecrisTransformer">
             <XSLT>transformers/openairecris.xsl</XSLT>
         </Transformer>
+=======
+>>>>>>> 678f949350790b2878d551677cd1cb295f075113
     </Transformers>
 
 
@@ -293,31 +342,83 @@
             </Definition>
         </Filter>
 
+<<<<<<< HEAD
         <!-- OpenAIRE CRIS filter for records returned by OAI-PMH.
          By default, return a record:
          * If the record is an Item or another supported type
          This filter is only used in the OpenAIRE context ([oai]/openaire-cris).
         -->
         <Filter id="openAireCRISFilter">
+=======
+        <!-- OpenAIRE filter for records returned by OAI-PMH.
+             By default, return an Item record:
+               * If a Title & Author field both exist
+               * AND a valid DRIVER Document Type exists
+               * AND Item is either publicly accessible OR Withdrawn (for tombstones)
+               * AND the OpenAIRE "dc.relation" is specified
+             This filter is only used in the OpenAIRE context ([oai]/openaire).
+        -->
+        <Filter id="openAireFilter">
+>>>>>>> 678f949350790b2878d551677cd1cb295f075113
             <Definition>
                 <And>
                     <LeftCondition>
                         <Or>
                             <LeftCondition>
+<<<<<<< HEAD
                                 <Custom ref="itemAccessCondition"/>
                             </LeftCondition>
                             <RightCondition>
                                 <Custom ref="itemWithdrawnCondition"/>
+=======
+                                <And>
+                                    <LeftCondition>
+                                        <Custom ref="titleExistsCondition"/>
+                                    </LeftCondition>
+                                    <RightCondition>
+                                        <Custom ref="authorExistsCondition"/>
+                                    </RightCondition>
+                                </And>
+                            </LeftCondition>
+                            <RightCondition>
+                                <Custom ref="driverDocumentTypeCondition"/>
+>>>>>>> 678f949350790b2878d551677cd1cb295f075113
                             </RightCondition>
                         </Or>
                     </LeftCondition>
                     <RightCondition>
+<<<<<<< HEAD
                         <Custom ref="crisObjectTypeCondition"/>
+=======
+                        <Or>
+                            <LeftCondition>
+                                <And>
+                                    <LeftCondition>
+                                        <Or>
+                                            <LeftCondition>
+                                                <Custom ref="itemAccessCondition"/>
+                                            </LeftCondition>
+                                            <RightCondition>
+                                                <Custom ref="itemWithdrawnCondition"/>
+                                            </RightCondition>
+                                        </Or>
+                                    </LeftCondition>
+                                    <RightCondition>
+                                        <Custom ref="driverAccessCondition"/>
+                                    </RightCondition>
+                                </And>
+                            </LeftCondition>
+                            <RightCondition>
+                                <Custom ref="openaireRelationCondition"/>
+                            </RightCondition>
+                        </Or>
+>>>>>>> 678f949350790b2878d551677cd1cb295f075113
                     </RightCondition>
                 </And>
             </Definition>
         </Filter>
 
+<<<<<<< HEAD
         <!-- OpenAIRE filter for records returned by OAI-PMH.
              By default, return an Item record:
                * If a Title & Author field both exist
@@ -381,6 +482,8 @@
             </Definition>
         </Filter>
 
+=======
+>>>>>>> 678f949350790b2878d551677cd1cb295f075113
         <!-- UKETD Filter for records returned by OAI-PMH.
              By default, return an Item record:
                 * If it is a "thesis"
@@ -501,6 +604,7 @@
             </Configuration>
         </CustomCondition>
 
+<<<<<<< HEAD
         <!-- This condition determines if an Item has a "dc.identifier.doi" or a "dc.identifier.uri" or a "dc.identifier.url" -->
         <CustomCondition id="identifierExistsCondition">
             <Class>org.dspace.xoai.filter.DSpaceMetadataExistsFilter</Class>
@@ -533,6 +637,8 @@
             </Configuration>
         </CustomCondition>
 
+=======
+>>>>>>> 678f949350790b2878d551677cd1cb295f075113
         <!-- This condition determines if an Item has a "dc.type" field
              specifying one of the valid DRIVER document types. -->
         <CustomCondition id="driverDocumentTypeCondition">
@@ -562,6 +668,7 @@
             </Configuration>
         </CustomCondition>
 
+<<<<<<< HEAD
         <!-- This condition determines if an OAI document is of one of the types
         	 required by OpenAIRE for CRIS System. -->
         <CustomCondition id="crisObjectTypeCondition">
@@ -580,6 +687,8 @@
             </Configuration>
         </CustomCondition>
 
+=======
+>>>>>>> 678f949350790b2878d551677cd1cb295f075113
         <!-- This condition determines if an Item has a "dc.rights" field
              specifying "open access", which is required for DRIVER
              OR "openAccess", which is required by OpenAIRE. -->
@@ -589,7 +698,10 @@
                 <string name="field">dc.rights</string>
                 <string name="operator">contains</string>
                 <list name="values">
+<<<<<<< HEAD
                     <string>open access</string>
+=======
+>>>>>>> 678f949350790b2878d551677cd1cb295f075113
                     <string>openAccess</string>
                 </list>
             </Configuration>
@@ -642,6 +754,7 @@
             </Configuration>
         </CustomCondition>
 
+<<<<<<< HEAD
 
         <Filter id="publicationOrJournalSetFilter">
             <Definition>
@@ -739,6 +852,8 @@
                 <string name="value">info:eu-repo/grantAgreement/</string>
             </Configuration>
         </CustomCondition> -->
+=======
+>>>>>>> 678f949350790b2878d551677cd1cb295f075113
     </Filters>
 
     <Sets>
@@ -747,7 +862,11 @@
             <Name>Open Access DRIVERset</Name>
             <!-- Just an alias -->
         </Set>
+<<<<<<< HEAD
         <Set id="openaireFundedResourcesSet">
+=======
+        <Set id="openaireSet">
+>>>>>>> 678f949350790b2878d551677cd1cb295f075113
             <Spec>openaire</Spec>
             <Name>OpenAIRE</Name>
             <!-- Just an alias -->
