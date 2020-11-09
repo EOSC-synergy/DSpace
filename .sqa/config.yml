@@ -12,7 +12,7 @@ sqa_criteria:
           - mvn -X -f /dspace-testing/pom.xml checkstyle:checkstyle
 
 environment:
-  GIT_COMMITTER_NAME: Fernando
+  GIT_COMMITTER_NAME: FernandoA
   GIT_COMMITTER_EMAIL: aguilarf@ifca.unican.es
   LANG: C.UTF-8
 
