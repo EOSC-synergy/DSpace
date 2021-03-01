@@ -1,0 +1,9 @@
+FROM ubuntu:20.04
+
+MAINTAINER Fernando Aguilar <aguilarf@ifca.unican.es>
+
+RUN apt-get update
+
+RUN apt-get install python3-pip -y
+
+RUN pip3 install requests_toolbelt
