@@ -6,7 +6,7 @@ import configparser
 #ENV
 USER = 'test@test.edu'
 PASS = 'admin'
-HOST = "dspace.ifca.es"
+HOST = "dspace"
 PORT = "8080"
 
 with open('local.cfg') as f:
@@ -41,15 +41,16 @@ print(resp_json)
 #resp = requests.post(url + '/api/core/communities', headers=headers, cookies=cookies, data=community_data)
 
 #Get community
+print("###### GET COMMuNITY ######")
 resp = requests.get(url + '/api/core/community', headers=headers)
 resp_json = json.loads(resp.content)
-community_id = "bc6aa7d3-f7cc-40e1-ba66-5b8e9b5fb03d"
+print(resp_json['_embedded'])
+community_id = resp_json['_embedded']['communities'][0]['id']
+community_id =  "bc6aa7d3-f7cc-40e1-ba66-5b8e9b5fb03d"
 
 #New item
 #resp = requests.post('http://dspace.ifca.es:8080/server/api/submission/workspaceitems?projection=full&owningCollection=bc6aa7d3-f7cc-40e1-ba66-5b8e9b5fb03d', headers=headers)
 #print(resp.content)
-
-
 payload={'name': 'AMT'}
 files=[
   ('file',('test.pdf',open('test.pdf','rb'),'application/pdf'))
@@ -57,9 +58,10 @@ files=[
 headers = {
   'Authorization': 'Bearer' + headers['Authorization']
 }
+print(url + '/api/submission/workspaceitems?projection=full&owningCollection=' + community_id)
+resp = requests.post(url + '/api/submission/workspaceitems?projection=full&owningCollection=' + community_id, headers=headers, data=payload, files=files)
 
-resp = requests.request("POST", url + '/api/submission/workspaceitems?projection=full&owningCollection=' + community_id, headers=headers, data=payload, files=files)
-
+print(resp.content)
 resp_json = json.loads(resp.content)
 print("\n###### UPLOAD ######\n")
 print(resp_json)
@@ -104,3 +106,10 @@ body = json.dumps({'id': pid, 'repo': 'dspace_7'})
 url = 'http://dspace-fair:9090/v1.0/rda/all'
 result = requests.post(url, data = body, headers={'Content-Type': 'application/json'})
 print(result.content)
+
+
+# Delete Item
+print("######### DELETE #########\n")
+print(item_url)
+resp = requests.delete(item_url, headers=headers)
+print(resp)

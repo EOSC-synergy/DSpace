@@ -1,0 +1,156 @@
+version: '3.7'
+networks:
+  dspacenet:
+services:
+  dspace:
+    container_name: dspace
+    image: "${DOCKER_OWNER:-dspace}/dspace:${DSPACE_VER:-dspace-7_x-test}"
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    depends_on:
+    - dspacedb
+    networks:
+      dspacenet:
+    ports:
+    - published: 8080
+      target: 8080
+    - published: 8009
+      target: 8009
+    stdin_open: true
+    tty: true
+    volumes:
+    - assetstore:/dspace/assetstore
+    - ./dspace/src/main/docker-compose/local.cfg:/dspace/config/local.cfg
+    # Ensure that the database is ready BEFORE starting tomcat
+    # 1. While a TCP connection to dspacedb port 5432 is not available, continue to sleep
+    # 2. Then, run database migration to init database tables
+    # 3. Finally, start Tomcat
+    entrypoint:
+    - /bin/bash
+    - '-c'
+    - |
+      while (!</dev/tcp/dspacedb/5432) > /dev/null 2>&1; do sleep 1; done;
+      /dspace/bin/dspace database migrate
+      catalina.sh run
+  dspacedb:
+    container_name: dspacedb
+    environment:
+      PGDATA: /pgdata
+    image: dspace/dspace-postgres-pgcrypto
+    networks:
+      dspacenet:
+    ports:
+    - published: 5432
+      target: 5432
+    stdin_open: true
+    tty: true
+    volumes:
+    - pgdata:/pgdata
+  dspacesolr:
+    container_name: dspacesolr
+    image: dspace/dspace-solr
+    networks:
+      dspacenet:
+    ports:
+    - published: 8983
+      target: 8983
+    stdin_open: true
+    tty: true
+    volumes:
+    - solr_authority:/opt/solr/server/solr/authority/data
+    - solr_oai:/opt/solr/server/solr/oai/data
+    - solr_search:/opt/solr/server/solr/search/data
+    - solr_statistics:/opt/solr/server/solr/statistics/data
+  #Create the test
+  dspace-cli:
+    image: "${DOCKER_OWNER:-dspace}/dspace-cli:${DSPACE_VER:-dspace-7_x}"
+    container_name: dspace-cli
+    build:
+      context: .
+      dockerfile: Dockerfile.cli
+    environment:
+    - AIPZIP=https://github.com/DSpace-Labs/AIP-Files/raw/main/dogAndReport.zip
+    - ADMIN_EMAIL=test@test.edu
+    - AIPDIR=/tmp/aip-dir
+    volumes:
+    - ./dspace/src/main/docker-compose/local.cfg:/dspace/config/local.cfg
+    - assetstore:/dspace/assetstore
+    entrypoint:
+      - /bin/bash
+      - '-c'
+      - |
+          rm -rf $${AIPDIR}
+          mkdir $${AIPDIR} /dspace/upload
+          cd $${AIPDIR}
+          pwd
+          curl $${AIPZIP} -L -s --output aip.zip
+          unzip aip.zip
+          cd $${AIPDIR}
+
+          /dspace/bin/dspace create-administrator -e test@test.edu -f admin -l user -p admin -c en
+          /dspace/bin/dspace packager -r -a -t AIP -e $${ADMIN_EMAIL} -f -u SITE*.zip
+          /dspace/bin/dspace database update-sequences
+          touch /dspace/solr/search/conf/reindex.flag
+
+          /dspace/bin/dspace oai import
+          /dspace/bin/dspace oai clean-cache
+    networks:
+      - dspacenet
+    tty: true
+    stdin_open: true
+  dspace_fair:
+    container_name: dspace-fair
+    image: "ferag/fair_eva:latest"
+    build:
+      context: .
+      dockerfile: Dockerfile.fair
+    depends_on:
+    - dspace
+    networks:
+      dspacenet:
+    volumes:
+    - ./fair.ini:/FAIR_eva/config.ini
+    # Ensure that the database is ready BEFORE starting tomcat
+    # 1. While a TCP connection to dspacedb port 5432 is not available, continue to sleep
+    # 2. Then, run database migration to init database tables
+    # 3. Finally, start Tomcat
+    entrypoint:
+    - /bin/bash
+    - '-c'
+    - |
+      while (!</dev/tcp/dspace/8080) > /dev/null 2>&1; do sleep 1; done;
+      ls /FAIR_eva
+      /FAIR_eva/fair.py
+  dspace_ds:
+    container_name: dspace-ingest
+    image: "${DOCKER_OWNER:-dspace}/dspace:${DSPACE_VER:-dspace-7_x-ingest}"
+    build:
+      context: .
+      dockerfile: Dockerfile.ds
+    depends_on:
+    - dspace_fair
+    networks:
+      dspacenet:
+    volumes:
+    - ./ingest_script.py:/ingest_script.py
+    - ./dspace/src/main/docker-compose/local.cfg:/local.cfg
+    - ./test.pdf:/test.pdf
+    # Ensure that the database is ready BEFORE starting tomcat
+    # 1. While a TCP connection to dspacedb port 5432 is not available, continue to sleep
+    # 2. Then, run database migration to init database tables
+    # 3. Finally, start Tomcat
+    entrypoint:
+    - /bin/bash
+    - '-c'
+    - |
+      while (!</dev/tcp/dspace/8080) > /dev/null 2>&1; do sleep 1; done;
+      python3 /ingest_script.py
+
+volumes:
+  assetstore:
+  pgdata:
+  solr_authority:
+  solr_oai:
+  solr_search:
+  solr_statistics:

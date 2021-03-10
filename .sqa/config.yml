@@ -1,0 +1,19 @@
+config:
+  project_repos:
+    myrepo:
+      repo: 'https://github.com/EOSC-synergy/DSpace.git'
+
+sqa_criteria:
+  qc_coverage:
+    repos:
+      myrepo:
+        container: dspace-testing
+        commands:
+          - mvn -X -f /dspace-testing/pom.xml checkstyle:checkstyle
+
+environment:
+  GIT_COMMITTER_NAME: Fernando
+  GIT_COMMITTER_EMAIL: aguilarf@ifca.unican.es
+  LANG: C.UTF-8
+
+timeout: 600
