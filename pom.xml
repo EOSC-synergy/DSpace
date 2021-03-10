@@ -1799,11 +1799,11 @@
     </distributionManagement>
 
     <repositories>
-        <!-- Check Maven Central first (before other repos below) -->
+        <!-- Check Maven Central first (before other repos below)
         <repository>
             <id>maven-central</id>
             <url>https://repo.maven.apache.org/maven2</url>
-        </repository>
+	</repository> -->
         <!-- Enable access to artifacts in Sonatype's snapshot repo for Snapshots ONLY -->
         <repository>
             <id>maven-snapshots</id>
