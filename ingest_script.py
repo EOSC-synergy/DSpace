@@ -46,7 +46,7 @@ resp = requests.get(url + '/api/core/community', headers=headers)
 resp_json = json.loads(resp.content)
 print(resp_json['_embedded'])
 community_id = resp_json['_embedded']['communities'][0]['id']
-community_id =  "bc6aa7d3-f7cc-40e1-ba66-5b8e9b5fb03d"
+#community_id =  "bc6aa7d3-f7cc-40e1-ba66-5b8e9b5fb03d"
 
 #New item
 #resp = requests.post('http://dspace.ifca.es:8080/server/api/submission/workspaceitems?projection=full&owningCollection=bc6aa7d3-f7cc-40e1-ba66-5b8e9b5fb03d', headers=headers)
