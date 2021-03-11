@@ -25,7 +25,7 @@ pipeline {
                 echo "Running tests in a fully containerized environment - :)"
                 dir ('.') {
                     sh 'docker-compose -p d7 -f docker-compose-fair.yml -f dspace/src/main/docker-compose/docker-compose-angular.yml up -d'
-                    docker logs -f dspace-ingest
+                    sh 'docker logs -f dspace-ingest'
                 }
             }
         }
