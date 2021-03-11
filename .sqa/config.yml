@@ -2,7 +2,6 @@ config:
   project_repos:
     myrepo:
       repo: 'https://github.com/EOSC-synergy/DSpace.git'
-      branch: main
 
 environment:
   GIT_COMMITTER_NAME: Fernando
