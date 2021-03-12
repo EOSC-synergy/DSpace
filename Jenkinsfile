@@ -42,7 +42,7 @@ pipeline {
             steps {
                 echo "Clean up"
                 dir ('.') {
-                    sh 'docker-compose docker-compose-fair.yml down -v'
+                    sh 'docker-compose -f docker-compose-fair.yml down -v'
                 }
             }
         }
