@@ -130,7 +130,7 @@ services:
       dockerfile: Dockerfile.ds
     depends_on:
     - dspace-cli
-    - dspace-fair
+    - dspace_fair
     networks:
       dspacenet:
     volumes:
