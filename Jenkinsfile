@@ -24,12 +24,7 @@ pipeline {
             steps {
                 echo "Running tests in a fully containerized environment - :)"
                 dir ('.') {
-                    sh 'docker stop dspace'
-                    sh 'docker rm dspace'
-                    sh 'docker stop dspace-ingest'
-                    sh 'docker rm dspace-ingest'  
                     sh 'docker-compose -p d7 -f docker-compose-fair.yml -f dspace/src/main/docker-compose/docker-compose-angular.yml up -d'
-                    sh 'docker logs -f dspace-ingest'
                 }
             }
         }
