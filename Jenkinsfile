@@ -42,6 +42,15 @@ pipeline {
                 }
             }
         }
+        stage('Integration cleanup') {
+            agent any
+            steps {
+                echo "Clean up"
+                dir ('.') {
+                    sh 'docker-compose docker-compose-fair.yml down -v'
+                }
+            }
+        }
     }
 }
 
