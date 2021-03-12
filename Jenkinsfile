@@ -30,6 +30,15 @@ pipeline {
                 }
             }
         }
+        stage('Repository FAIRness assesment') {
+            agent any
+            steps {
+                echo "Check ingestion"
+                dir ('.') {
+                    sh 'docker logs -f dspace-ingest'
+                }
+            }
+        }
     }
 }
 
