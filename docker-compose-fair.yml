@@ -129,8 +129,8 @@ services:
       context: .
       dockerfile: Dockerfile.ds
     depends_on:
-    - dspace_cli
-    - dspace_fair
+    - dspace-cli
+    - dspace-fair
     networks:
       dspacenet:
     volumes:
