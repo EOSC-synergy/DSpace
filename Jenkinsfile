@@ -34,6 +34,7 @@ pipeline {
                 echo "Check ingestion"
                 dir ('.') {
                     sh 'docker logs -f dspace-ingest'
+                    sh 'docker logs -f dspace-cli'
                 }
             }
         }
